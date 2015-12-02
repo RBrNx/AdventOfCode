@@ -22,13 +22,21 @@ int calculateSurfaceArea(int length, int width, int height) {
 	return lw + wh + hl + minimum;
 }
 
+int calculateRibbon(int length, int width, int height) {
+	int smallestPerimeter = min({ length * 2 + width * 2, width * 2 + height * 2, height * 2 + length * 2 }); //Ribbon to Wrap Present
+	int cubicVolume = length * width * height; //Ribbon for Bow
+
+	return smallestPerimeter + cubicVolume;
+}
+
 int main()
 {
 	vector<present> presents;
 	vector<string> lines;
 	string line;
 	ifstream myFile ("data.txt");
-	int totalSurfaceArea = 0;
+	int totalWrappingPaper = 0;
+	int totalRibbon = 0;
 	
 	if (myFile.is_open())
 	{
@@ -59,11 +67,13 @@ int main()
 		presents[i].width = std::stoi(width, NULL, 10);
 		presents[i].height = std::stoi(height, NULL, 10);
 		
-		totalSurfaceArea += calculateSurfaceArea(presents[i].length, presents[i].width, presents[i].height);
-		cout << presents[i].length << " " << presents[i].width << " " << presents[i].height << endl;
+		totalWrappingPaper += calculateSurfaceArea(presents[i].length, presents[i].width, presents[i].height);
+		totalRibbon += calculateRibbon(presents[i].length, presents[i].width, presents[i].height);
+		//cout << presents[i].length << " " << presents[i].width << " " << presents[i].height << endl;
 	}
 
-	cout << totalSurfaceArea;
+	cout << totalWrappingPaper << endl;
+	cout << totalRibbon << endl;
 
 	cin.get();
 	return 0;
