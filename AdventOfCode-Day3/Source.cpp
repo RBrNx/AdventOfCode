@@ -45,9 +45,13 @@ int main() {
 	
 	int x = 999;
 	int y = 999;
-	Grid[y][x] = 1;
-	for (int i = 0; i < santaMoves.size(); i++) {
+	int robox = 999;
+	int roboy = 999;
 
+	Grid[y][x] = 1;
+	for (int i = 0; i < santaMoves.size(); i+=2) {
+
+		// Move Santa 1 Square
 		if (santaMoves[i] == '<'){
 			x = x - 1;
 			Grid[y][x]++;
@@ -71,6 +75,32 @@ int main() {
 		else if (santaMoves[i] == 'v') {
 			y = y - 1;
 			Grid[y][x]++;
+		}
+
+		// Move RoboSanta 1 Square
+		if (santaMoves[i+1] == '<') {
+			robox = robox - 1;
+			Grid[roboy][robox]++;
+		}
+		else if (santaMoves[i+1] == '>') {
+			robox = robox + 1;
+			if (robox == Grid[0].size()) {
+				for (int i = 0; i < Grid.size(); i++) {
+					Grid[i].resize(Grid[i].size() + 1);
+				}
+			}
+			Grid[roboy][robox]++;
+		}
+		else if (santaMoves[i+1] == '^') {
+			roboy = roboy + 1;
+			if (roboy == Grid.size()) {
+				Grid.push_back(vector<int>(Grid[0].size(), 0));
+			}
+			Grid[roboy][robox]++;
+		}
+		else if (santaMoves[i+1] == 'v') {
+			roboy = roboy - 1;
+			Grid[roboy][robox]++;
 		}
 	}
 
