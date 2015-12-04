@@ -21,7 +21,7 @@ int main()
 
 		md5Output = md5(input);
 
-		if (md5Output.substr(0,3) == "00000")
+		if (md5Output.substr(0,5) == "00000")
 		{
 			found = true;
 			cout << number << endl;
