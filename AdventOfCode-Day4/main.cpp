@@ -9,7 +9,7 @@ int main()
 	string input = "iwrupvqb";
 	string md5Output;
 
-	int number = 0;
+	int number = 2000000;
 	bool found = false;
 
 	while (!found)
@@ -19,7 +19,7 @@ int main()
 			
 		md5Output = md5(input);
 
-		cout << md5Output << "   " << number << endl;
+		//cout << md5Output << "   " << number << endl;
 
 		if (md5Output.substr(0,6) == "000000")
 		{
