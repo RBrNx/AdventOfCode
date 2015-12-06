@@ -9,6 +9,7 @@ using namespace std;
 vector<string> lines;
 string line;
 bool lightArray[1000][1000];
+int lightArrayPart2[1000][1000];
 
 void readFile(string filename) {
 	ifstream myFile(filename);
@@ -43,9 +44,31 @@ void onOffLights(int onOff, int leftX, int leftY, int rightX, int rightY) {
 	}
 }
 
+void toggleLightsPart2(int leftX, int leftY, int rightX, int rightY) {
+	for (int y = leftY; y <= rightY; y++) {
+		for (int x = leftX; x <= rightX; x++) {
+			lightArrayPart2[y][x] += 2;
+		}
+	}
+}
+
+void onOffLightsPart2(int onOff, int leftX, int leftY, int rightX, int rightY) {
+	for (int y = leftY; y <= rightY; y++) {
+		for (int x = leftX; x <= rightX; x++) {
+			if (onOff == -1 && lightArrayPart2[y][x] > 0) {
+				lightArrayPart2[y][x] += onOff;
+			}
+			if (onOff == 1) {
+				lightArrayPart2[y][x] += onOff;
+			}
+		}
+	}
+}
+
 int main() {
 	int onOff = 0;
 	int lightsOn = 0;
+	int totalBrightness = 0;
 
 	readFile("data.txt");
 	
@@ -60,7 +83,7 @@ int main() {
 				onOff = 1;
 			}
 			else {
-				onOff = 0;
+				onOff = -1; //0 for Part 1, -1 for Part 2
 			}
 		}
 		
@@ -76,23 +99,32 @@ int main() {
 		int RightY = std::stoi(rightCornerCoord);
 
 		if (instruction == "turn") {
-			onOffLights(onOff, LeftX, LeftY, RightX, RightY);
+			onOffLightsPart2(onOff, LeftX, LeftY, RightX, RightY); //Take away Part 2 for Part 1
 		}
 		else if (instruction == "toggle") {
-			toggleLights(LeftX, LeftY, RightX, RightY);
+			toggleLightsPart2(LeftX, LeftY, RightX, RightY); //Take away Part 2 for Part 1
 		}
 	}
 
-	//onOffLights(1, 0, 0, 999, 999);
+	//onOffLightsPart2(1, 0, 0, 0, 0);
 
-	for (int y = 0; y < 1000; y++) {
+	//Part 1
+	/*for (int y = 0; y < 1000; y++) {
 		for (int x = 0; x < 1000; x++) {
-			if (lightArray[y][x] == 1) {
+			if (lightArrayPart2[y][x] == 1) {
 				lightsOn++;
 			}
 		}
+	}*/
+
+	//Part 2
+	for (int y = 0; y < 1000; y++) {
+		for (int x = 0; x < 1000; x++) {
+			totalBrightness += lightArrayPart2[y][x]; //Take away Part 2 for Part 1
+		}
 	}
 
-	cout << lightsOn;
+	//cout << lightsOn;
+	cout << totalBrightness;
 	cin.get();
 }
