@@ -12,7 +12,8 @@ int distanceArray[8][8];
 vector<string> places;
 vector<string> combinations;
 int totalComboDistance = 0;
-int smallestCombo = 10000000000;
+int smallestCombo = 100000;
+int biggestCombo = 0;
 
 void readFile(string filename) {
 	ifstream myFile(filename);
@@ -43,6 +44,9 @@ void perm(int combo[], int n, int i) {
 		totalComboDistance = 0;
 		for (int FromIter = 0, ToIter = 1; FromIter < n-1; FromIter++, ToIter++) {
 			totalComboDistance += distanceArray[combo[FromIter]][combo[ToIter]];
+		}
+		if (totalComboDistance > biggestCombo) {
+			biggestCombo = totalComboDistance;
 		}
 		if (totalComboDistance < smallestCombo) {
 			smallestCombo = totalComboDistance;
@@ -107,13 +111,9 @@ int main() {
 
 	//calculate permutation
 	perm(ints, 8, 0);
-	//take combo 1
-	//from starts on combo[0] 
-	// to starts on combo[1]
-	// loop til from = end-1
-	//count+= distanceArray[fromIterator][toIterator];
-	//have int min start as count? or stupidly high number? if next count < min then min = next count
-	cout << smallestCombo;
+
+	cout << smallestCombo << endl;
+	cout << biggestCombo << endl;
 
 	cin.get();
 }
