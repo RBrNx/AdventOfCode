@@ -46,6 +46,46 @@ int Count(vector<string> lines) {
 	return difference;
 }
 
+int CountPart2(vector<string> lines) {
+	int totalCodeChar = 0;
+	int totalMemChar = 0;
+
+	//for (int i = 0; i < lines.size(); i++) {
+	for (int i = 0; i < 1; i++){
+		int j = 0;
+		totalMemChar += 2;
+
+		while (j < lines[i].length()) {
+			if (lines[i].at(j) == '\\') {
+				j++;
+				totalMemChar += 2;
+				if (lines[i].at(j) == 'x') {
+					j += 3;
+					totalCodeChar += 4;
+					totalMemChar += 4;
+				}
+				else {
+					j++;
+					totalCodeChar += 2;
+					totalMemChar += 3;
+				}
+			}
+			else if (lines[i].at(j) == '\"') {
+				j++;
+				totalCodeChar += 1;
+			}
+			else {
+				j++;
+				totalCodeChar += 1;
+				totalMemChar += 1;
+			}
+		}
+	}
+
+	int difference = totalMemChar - totalCodeChar;
+	return difference;
+}
+
 
 void readFile(string filename) {
 	ifstream myFile(filename);
@@ -67,6 +107,6 @@ void readFile(string filename) {
 int main() {
 	readFile("data.txt");
 
-	cout << Count(lines);
+	cout << CountPart2(lines);
 	cin.get();
 }
