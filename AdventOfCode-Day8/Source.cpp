@@ -9,26 +9,41 @@ using namespace std;
 vector<string> lines;
 string line;
 
-int codeCount(string line) {
-	int count = 0;
-	int slashPosition;
-	if ((slashPosition = line.find('\\')) > 0) {
-		if ((line.substr(slashPosition+1, 1)) == "\\"){ // == "\"
-			line.erase(slashPosition, 2); //Delete the 2 backslashes
-			count += 1;
-		}
-		else if ((line.substr(slashPosition + 1, 1)) == "\"") { // == " " "
-			line.erase(slashPosition, 2); //Delete the backslash and quote
-			count += 1;
+int Count(vector<string> lines) {
+	int totalCodeChar = 0;
+	int totalMemChar = 0;
+	
+	for (int i = 0; i < lines.size(); i++) {
+		int j = 0;
+
+		while(j < lines[i].length()) {
+			if (lines[i].at(j) == '\\') {
+				j++;
+				if (lines[i].at(j) == 'x') {
+					j += 3;
+					totalCodeChar += 4;
+					totalMemChar += 1;
+				}
+				else {
+					j++;
+					totalCodeChar += 2;
+					totalMemChar += 1;
+				}
+			}
+			else if (lines[i].at(j) == '\"') {
+				j++;
+				totalCodeChar += 1;
+			}
+			else {
+				j++;
+				totalCodeChar += 1;
+				totalMemChar += 1;
+			}
 		}
 	}
-	count += line.length();
 
-	return count;
-}
-
-int memoryCount(string line) {
-
+	int difference = totalCodeChar - totalMemChar;
+	return difference;
 }
 
 
@@ -52,7 +67,6 @@ void readFile(string filename) {
 int main() {
 	readFile("data.txt");
 
-	cout << codeCount(lines[2]);
-
+	cout << Count(lines);
 	cin.get();
 }
