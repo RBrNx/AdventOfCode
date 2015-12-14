@@ -18,7 +18,7 @@ string incrementPassword(string input, int pos) {
 		lastChar = 'a';
 		input.erase(pos, 1);
 		input.insert(pos, 1, lastChar);
-		incrementPassword(input, pos - 1);
+		return incrementPassword(input, pos - 1);
 	}
 	return input;
 }
@@ -73,15 +73,16 @@ bool testPassword(string input) {
 
 int main() {
 	string input = "vzbxkghb";
-	//string input = "hijklmmn";
+	string input2 = "vzbxxyzz";
 	bool securePassword = false;
 
 	while (securePassword == false) {
-		input = incrementPassword(input, input.length()-1);
-		securePassword = testPassword(input);
+		input2 = incrementPassword(input2, input2.length()-1);
+		securePassword = testPassword(input2);
 	}
 
-	cout << input;
+	cout << input2;
 
+	cin.get();
 }
 
