@@ -72,8 +72,8 @@ bool testPassword(string input) {
 }
 
 int main() {
-	string input = "vzbxkghb";
-	string input2 = "vzbxxyzz";
+	//string input = "hepxcrrq";
+	string input2 = "hepxxyzz";
 	bool securePassword = false;
 
 	while (securePassword == false) {

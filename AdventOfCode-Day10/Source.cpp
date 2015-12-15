@@ -36,7 +36,7 @@ string lookAndSay(string input) {
 }
 
 int main() {
-	string input = "1113222113";
+	string input = "3113322113";
 	int Part1 = 40;
 	int Part2 = 50;
 
