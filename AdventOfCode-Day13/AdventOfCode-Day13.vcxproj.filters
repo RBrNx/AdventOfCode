@@ -23,6 +23,9 @@
     <Text Include="data.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="data2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
     <Text Include="README-Puzzle.txt">
       <Filter>Resource Files</Filter>
     </Text>

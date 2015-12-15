@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{047457DB-ACA5-4786-BD0F-B5EE18BB085B}</ProjectGuid>
-    <RootNamespace>AdventOfCodeDay12</RootNamespace>
+    <ProjectGuid>{C8179C8E-E10F-44DF-A040-8B3993D04F99}</ProjectGuid>
+    <RootNamespace>AdventOfCodeDay13</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="data.txt" />
+    <Text Include="data2.txt" />
     <Text Include="README-Puzzle.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
