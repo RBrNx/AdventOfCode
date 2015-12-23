@@ -20,7 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="data.txt">
+    <Text Include="shop.txt">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="README-Puzzle.txt">
