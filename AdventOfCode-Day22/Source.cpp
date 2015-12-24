@@ -53,7 +53,7 @@ public:
 				if (Name == "Poison") CastPoison(alreadyActive);
 				if (Name == "Recharge") CastRecharge(alreadyActive);
 				timer--;
-				if (Debug && Name == "Shield" || Name == "Poison" || Name == "Recharge") cout << Name << " Timer: " << timer << endl;
+				if (Debug == true && (Name == "Shield" || Name == "Poison" || Name == "Recharge")) cout << Name << " Timer: " << timer << endl;
 				if (timer == 0) {
 					timer = TurnLength;
 					active = false;
@@ -63,7 +63,7 @@ public:
 			else {
 				if (Player.Mana > ManaCost) {
 					active = true;
-					cout << "Player casts " << Name << endl;
+					if (Debug) cout << "Player casts " << Name << endl;
 					CastSpell(false);
 				}
 			}
@@ -99,11 +99,11 @@ public:
 
 		void Spell::CastPoison(bool alreadyActive) {
 			if (!alreadyActive) {
-				if (Debug) cout << "Poison Deals " << EffectValue << " Damage" << endl;
 				Player.Mana -= ManaCost;
 				Player.manaSpent += ManaCost;
 			}
 			Boss.HP -= EffectValue;
+			if (Debug) cout << "Poison Deals " << EffectValue << " Damage" << endl;
 		}
 
 		void Spell::CastRecharge(bool alreadyActive) {
@@ -118,12 +118,20 @@ public:
 		int Spell::returnManaCost() {
 			return ManaCost;
 		}	
+
+		string Spell::returnName() {
+			return Name;
+		}
 };
 
 vector<Spell> playerSpells;
+vector<string> castSpells;
+vector<string> bestSpells;
 
 void getSpell() {
 	vector<int> nonActiveSpells;
+	bool spellChosen = false;
+	int tries = 0;
 
 	for (int i = 0; i < playerSpells.size(); i++) {
 		if (!playerSpells[i].isActive()) {
@@ -131,26 +139,41 @@ void getSpell() {
 		}
 	}
 
-	int random = rand() % nonActiveSpells.size();
-	if (playerSpells[nonActiveSpells[random]].returnManaCost() < Player.Mana && Player.manaSpent < lowestManaCount) {
-		playerSpells[nonActiveSpells[random]].CastSpell(false);
+	while (!spellChosen && tries < nonActiveSpells.size()) {
+		int random = rand() % nonActiveSpells.size();
+		int chosenSpell = nonActiveSpells[random];
+		if (playerSpells[chosenSpell].returnManaCost() < Player.Mana) {
+			if (Player.manaSpent < lowestManaCount) {
+				playerSpells[chosenSpell].CastSpell(false);
+				spellChosen = true;
+				castSpells.push_back(playerSpells[chosenSpell].returnName());
+			}
+		}
+		tries++;
 	}
 }
 
-void playersTurn(bool debug) {
+void playersTurn(bool debug, bool hardMode) {
 	if (debug) {
 		cout << endl;
 		cout << "-- Player Turn --" << endl;
 		cout << "Player has " << Player.HP << " HP, " << Player.Armor << " Armor, " << Player.Mana << " Mana." << endl;
 		cout << "Boss has " << Boss.HP << " HP." << endl;
 	}
-	
-	for (int i = 0; i < playerSpells.size(); i++) {
-		if (playerSpells[i].isActive()) {
-			playerSpells[i].CastSpell(true);
-		}
+
+	if (hardMode) {
+		Player.HP -= 1;
+		if (debug) cout << "Player loses 1 HP due to HardMode" << endl;
 	}
 
+	if (Player.HP > 0) {
+		for (int i = 0; i < playerSpells.size(); i++) {
+			if (playerSpells[i].isActive()) {
+				playerSpells[i].CastSpell(true);
+			}
+		}
+	}
+	
 	getSpell();
 }
 
@@ -176,10 +199,10 @@ void bossTurn(bool debug) {
 }
 
 void reset(bool debug) {
-	//Player.HP = 50, Player.Mana = 500, Player.Armor = 0;
-	//Boss.HP = 55, Boss.Damage = 8;
-	Player.HP = 10, Player.Mana = 250, Player.Armor = 0;
-	Boss.HP = 13, Boss.Damage = 8;
+	Player.HP = 50, Player.Mana = 500, Player.Armor = 0, Player.manaSpent = 0;
+	Boss.HP = 55, Boss.Damage = 8;
+	//Player.HP = 10, Player.Mana = 250, Player.Armor = 0, Player.manaSpent = 0;
+	//Boss.HP = 13, Boss.Damage = 8;
 	playerSpells.clear();
 	playerSpells.push_back(Spell("Magic Missile", 53, 1, 4, debug));
 	playerSpells.push_back(Spell("Drain", 73, 1, 2, debug));
@@ -189,27 +212,40 @@ void reset(bool debug) {
 }
 
 int main() {
-	bool debug = true;
+	bool debug = false;
+	bool hardMode = true;
 
 	reset(debug);
 	srand(time(NULL));
 
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < 10000; i++) {
 		reset(debug);
 		while (Player.HP > 0 && Boss.HP > 0) {
 			if (Player.Mana < 53) break;
-			playersTurn(debug);
+			playersTurn(debug, hardMode);
 			bossTurn(debug);
 		}
 
 		if (Boss.HP <= 0) {
 			if (Player.manaSpent < lowestManaCount) {
 				lowestManaCount = Player.manaSpent;
+				bestSpells.clear();
+				for (int i = 0; i < castSpells.size(); i++) {
+					bestSpells.push_back(castSpells[i]);
+				}
 			}
-			cout << "Player Won";
+			else {
+				castSpells.clear();
+			}
+		}
+		else {
+			castSpells.clear();
 		}
 	}
 
+	for (int i = 0; i < bestSpells.size(); i++) {
+		cout << bestSpells[i] << endl;
+	}
 	cout << lowestManaCount;
 	cin.get();
 }
