@@ -42,86 +42,90 @@ public:
 		active = false;
 		EffectValue = effectValue;
 		Debug = debug;
-		
+
 	}
 
 	void Spell::CastSpell(bool alreadyActive) {
-			if (active) {
-				if (Name == "Magic Missile") CastMagicMissile();
-				if (Name == "Drain") CastDrain();
-				if (Name == "Shield") CastShield(alreadyActive);
-				if (Name == "Poison") CastPoison(alreadyActive);
-				if (Name == "Recharge") CastRecharge(alreadyActive);
-				timer--;
-				if (Debug == true && (Name == "Shield" || Name == "Poison" || Name == "Recharge")) cout << Name << " Timer: " << timer << endl;
-				if (timer == 0) {
-					timer = TurnLength;
-					active = false;
-					if (Name == "Shield") Player.Armor = 0;
-				}
-			}
-			else {
-				if (Player.Mana > ManaCost) {
-					active = true;
-					if (Debug) cout << "Player casts " << Name << endl;
-					CastSpell(false);
-				}
+		if (active) {
+			if (Name == "Magic Missile") CastMagicMissile();
+			if (Name == "Drain") CastDrain();
+			if (Name == "Shield") CastShield(alreadyActive);
+			if (Name == "Poison") CastPoison(alreadyActive);
+			if (Name == "Recharge") CastRecharge(alreadyActive);
+			timer--;
+			if (Debug == true && (Name == "Shield" || Name == "Poison" || Name == "Recharge")) cout << Name << " Timer: " << timer << endl;
+			if (timer == 0) {
+				timer = TurnLength;
+				active = false;
+				if (Name == "Shield") Player.Armor = 0;
 			}
 		}
-
-		bool Spell::isActive() {
-			return active;
+		else {
+			if (Player.Mana > ManaCost) {
+				active = true;
+				if (Debug) cout << "Player casts " << Name << endl;
+				CastSpell(false);
+			}
 		}
+	}
 
-		void Spell::CastMagicMissile() {
-			if (Debug) cout << "Magic Missile Deals " << EffectValue << " Damage" << endl;
+	bool Spell::isActive() {
+		return active;
+	}
+
+	void Spell::CastMagicMissile() {
+		if (Debug) cout << "Magic Missile Deals " << EffectValue << " Damage" << endl;
+		Player.Mana -= ManaCost;
+		Player.manaSpent += ManaCost;
+		Boss.HP -= EffectValue;
+	}
+
+	void Spell::CastDrain() {
+		if (Debug) cout << "Drain Deals " << EffectValue << " Damage and Recovers " << EffectValue << " Health" << endl;
+		Player.Mana -= ManaCost;
+		Player.manaSpent += ManaCost;
+		Boss.HP -= EffectValue;
+		Player.HP += EffectValue;
+	}
+
+	void Spell::CastShield(bool alreadyActive) {
+		//if (Debug) cout << "Shield is Active" << endl;
+		if (!alreadyActive) {
 			Player.Mana -= ManaCost;
 			Player.manaSpent += ManaCost;
-			Boss.HP -= EffectValue;
 		}
+		Player.Armor = 7;
+	}
 
-		void Spell::CastDrain() {
-			if (Debug) cout << "Drain Deals " << EffectValue << " Damage and Recovers " << EffectValue << " Health" << endl;
+	void Spell::CastPoison(bool alreadyActive) {
+		if (!alreadyActive) {
 			Player.Mana -= ManaCost;
 			Player.manaSpent += ManaCost;
-			Boss.HP -= EffectValue;
-			Player.HP += EffectValue;
 		}
-
-		void Spell::CastShield(bool alreadyActive) {
-			//if (Debug) cout << "Shield is Active" << endl;
-			if (!alreadyActive) {
-				Player.Mana -= ManaCost;
-				Player.manaSpent += ManaCost;
-			}
-			Player.Armor = 7;
-		}
-
-		void Spell::CastPoison(bool alreadyActive) {
-			if (!alreadyActive) {
-				Player.Mana -= ManaCost;
-				Player.manaSpent += ManaCost;
-			}
+		if (alreadyActive) {
 			Boss.HP -= EffectValue;
 			if (Debug) cout << "Poison Deals " << EffectValue << " Damage" << endl;
 		}
+	}
 
-		void Spell::CastRecharge(bool alreadyActive) {
-			if (!alreadyActive) {
-				if (Debug) cout << EffectValue << " Mana is regained" << endl;
-				Player.Mana -= ManaCost;
-				Player.manaSpent += ManaCost;
-			}
+	void Spell::CastRecharge(bool alreadyActive) {
+		if (!alreadyActive) {
+			if (Debug) cout << EffectValue << " Mana is regained" << endl;
+			Player.Mana -= ManaCost;
+			Player.manaSpent += ManaCost;
+		}
+		if (alreadyActive) {
 			Player.Mana += EffectValue;
 		}
+	}
 
-		int Spell::returnManaCost() {
-			return ManaCost;
-		}	
+	int Spell::returnManaCost() {
+		return ManaCost;
+	}
 
-		string Spell::returnName() {
-			return Name;
-		}
+	string Spell::returnName() {
+		return Name;
+	}
 };
 
 vector<Spell> playerSpells;
@@ -173,7 +177,7 @@ void playersTurn(bool debug, bool hardMode) {
 			}
 		}
 	}
-	
+
 	getSpell();
 }
 
@@ -192,7 +196,7 @@ void bossTurn(bool debug) {
 	}
 
 	if (Boss.HP > 0) {
-		int BossDamage = (Boss.Damage - Player.Armor) > 0 ? Boss.Damage - Player.Armor : - 1;
+		int BossDamage = (Boss.Damage - Player.Armor) > 0 ? Boss.Damage - Player.Armor : -1;
 		Player.HP = Player.HP - BossDamage;
 		if (debug) cout << "Boss Deals " << BossDamage << " Damage." << endl;
 	}
@@ -207,13 +211,13 @@ void reset(bool debug) {
 	playerSpells.push_back(Spell("Magic Missile", 53, 1, 4, debug));
 	playerSpells.push_back(Spell("Drain", 73, 1, 2, debug));
 	playerSpells.push_back(Spell("Shield", 113, 7, 7, debug)); //Shield is 7 instead of 6 turns here, due to the way this is coded, it works out at 6 turns though
-	playerSpells.push_back(Spell("Poison", 173, 6, 3, debug));
-	playerSpells.push_back(Spell("Recharge", 229, 5, 101, debug));
+	playerSpells.push_back(Spell("Poison", 173, 7, 3, debug)); //Poison is 7 instead of 6 turns here, due to the way this is coded, it works out at 6 turns though
+	playerSpells.push_back(Spell("Recharge", 229, 6, 101, debug)); //Recharge is 6 instead of 5 turns here, due to the way this is coded, it works out at 5 turns though
 }
 
 int main() {
 	bool debug = false;
-	bool hardMode = true;
+	bool hardMode = false;
 
 	reset(debug);
 	srand(time(NULL));
@@ -223,10 +227,11 @@ int main() {
 		while (Player.HP > 0 && Boss.HP > 0) {
 			if (Player.Mana < 53) break;
 			playersTurn(debug, hardMode);
+			if (Player.HP <= 0) break;
 			bossTurn(debug);
 		}
 
-		if (Boss.HP <= 0) {
+		if (Boss.HP <= 0 && Player.HP > 0) {
 			if (Player.manaSpent < lowestManaCount) {
 				lowestManaCount = Player.manaSpent;
 				bestSpells.clear();
@@ -247,5 +252,6 @@ int main() {
 		cout << bestSpells[i] << endl;
 	}
 	cout << lowestManaCount;
+	//cout << "Finshed" << endl;
 	cin.get();
 }
