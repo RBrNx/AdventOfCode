@@ -13,6 +13,7 @@ int steps = 100;
 int lightsOn;
 bool lightArray[lightSize][lightSize];
 bool lightArrayBuffer[lightSize][lightSize];
+bool lightsBroke = true; //False for Part 1, True for Part 2
 
 void readFile(string filename) {
 	ifstream myFile(filename);
@@ -85,7 +86,7 @@ int main() {
 	for (int i = 0; i < steps; i++) {
 		for (int x = 0; x < lightSize; x++) {
 			for (int y = 0; y < lightSize; y++) {
-				brokenLights(true);
+				brokenLights(lightsBroke);
 
 				int neighboursOn = calculateNeighbourhood(lightArray, x, y);
 				if (lightArray[x][y] == 1) {
@@ -107,7 +108,7 @@ int main() {
 			}
 		}
 		swapBuffers();
-		brokenLights(true);
+		brokenLights(lightsBroke);
 	}
 
 	for (int i = 0; i < lightSize; i++) {
