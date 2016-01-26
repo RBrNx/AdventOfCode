@@ -217,7 +217,7 @@ void reset(bool debug) {
 
 int main() {
 	bool debug = false;
-	bool hardMode = false;
+	bool hardMode = true; //false for part 1, true for part 2
 
 	reset(debug);
 	srand(time(NULL));
