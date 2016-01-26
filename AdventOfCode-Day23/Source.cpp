@@ -7,8 +7,8 @@
 
 using namespace std;
 
-//int registerA = 0; //Part 1
-int registerA = 1; //Part 2
+int registerA = 0; //Part 1
+//int registerA = 1; //Part 2
 int registerB = 0;
 vector<string> instructions;
 string line;
