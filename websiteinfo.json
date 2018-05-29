@@ -1,5 +1,5 @@
 {
-  "show": true,
+  "show": false,
   "image": "img/aoc2015.png",
   "title": "Advent Of Code 2015",
   "description": "Complete Answers for the Advent of Code 2015 challenge."
